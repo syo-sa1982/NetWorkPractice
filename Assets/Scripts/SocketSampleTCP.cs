@@ -38,13 +38,12 @@ public class SocketSampleTCP : MonoBehaviour
 	void StartListener (int port)
 	{
 		Debug.Log("Start server communication.");
-
+		// ソケット生成
 		m_listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
+		// ポート番号割当
 		m_listener.Bind(new IPEndPoint(IPAddress.Any, port));
-
+		// 待受開始
 		m_listener.Listen(1);
-
 		m_state = State.AcceptClient;
 		
 	}
@@ -53,6 +52,7 @@ public class SocketSampleTCP : MonoBehaviour
 	{
 		if (m_listener != null && m_listener.Poll(0, SelectMode.SelectRead)) {
 			m_socket = m_listener.Accept();
+			Debug.Log("[TCP]Connected from client.");
 			m_isConnected = true;
 		}
 	}

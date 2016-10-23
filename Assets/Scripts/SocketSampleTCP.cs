@@ -6,6 +6,8 @@ using System.Net.Sockets;
 public class SocketSampleTCP : MonoBehaviour 
 {
 	private Socket m_listener = null;
+	private Socket m_socket = null;
+	private bool m_isConnected = false;
 	private State m_state;
 
 	// 状態定義
@@ -45,6 +47,14 @@ public class SocketSampleTCP : MonoBehaviour
 
 		m_state = State.AcceptClient;
 		
+	}
+
+	void AcceptClient()
+	{
+		if (m_listener != null && m_listener.Poll(0, SelectMode.SelectRead)) {
+			m_socket = m_listener.Accept();
+			m_isConnected = true;
+		}
 	}
 	
 }

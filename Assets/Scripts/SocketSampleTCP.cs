@@ -5,6 +5,10 @@ using System.Net.Sockets;
 
 public class SocketSampleTCP : MonoBehaviour 
 {
+
+	// 接続先のポート番号.
+	private string m_address = "";
+	private const int m_port = 50765;
 	private Socket m_listener = null;
 	private Socket m_socket = null;
 	private bool m_isConnected = false;
@@ -57,4 +61,15 @@ public class SocketSampleTCP : MonoBehaviour
 		}
 	}
 	
+	void ClientProcess()
+	{
+		// サーバーへ接続
+		m_socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+		m_socket.NoDelay = true;
+		m_socket.Connect(m_address, m_port);
+
+		// メッセージ送信
+		byte[] buffer = System.Text.Encoding.UTF8.GetBytes("Hello, this is client.");
+		m_socket.Send(buffer, buffer.Length, SocketFlags.None);
+	}
 }

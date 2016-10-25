@@ -52,6 +52,7 @@ public class SocketSampleTCP : MonoBehaviour
 		
 	}
 
+	// クライアントからの接続待ち
 	void AcceptClient()
 	{
 		if (m_listener != null && m_listener.Poll(0, SelectMode.SelectRead)) {
@@ -60,7 +61,21 @@ public class SocketSampleTCP : MonoBehaviour
 			m_isConnected = true;
 		}
 	}
+
+	// クライアントからのメッセージ受信
+	void ServerCommunication()
+	{
+		byte[] buffer = new byte[1400];
+		int recvSize = m_socket.Receive(buffer, buffer.Length, SocketFlags.None);
+
+		if (recvSize > 0) {
+			string message = System.Text.Encoding.UTF8.GetString(buffer);
+			Debug.Log(message);
+			m_state = State.StopListener;
+		}
+	}
 	
+	// クライアント側の処理
 	void ClientProcess()
 	{
 		// サーバーへ接続

@@ -74,10 +74,25 @@ public class SocketSampleTCP : MonoBehaviour
 			m_state = State.StopListener;
 		}
 	}
+
+	// 待受終了
+	void StopListener()
+	{
+		if (m_listener != null) {
+			m_listener.Close();
+			m_listener = null;
+		}
+
+		m_state = State.Endcommunication;
+
+		Debug.Log("[TCP]End server communication.");
+	}
 	
 	// クライアント側の処理
 	void ClientProcess()
 	{
+		Debug.Log("[TCP]Start client communication.");
+
 		// サーバーへ接続
 		m_socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 		m_socket.NoDelay = true;
@@ -86,5 +101,11 @@ public class SocketSampleTCP : MonoBehaviour
 		// メッセージ送信
 		byte[] buffer = System.Text.Encoding.UTF8.GetBytes("Hello, this is client.");
 		m_socket.Send(buffer, buffer.Length, SocketFlags.None);
+
+		// 切断
+		m_socket.Shutdown(SocketShutdown.Both);
+		m_socket.Close();
+
+		Debug.Log("[TCP]End client communication.");
 	}
 }

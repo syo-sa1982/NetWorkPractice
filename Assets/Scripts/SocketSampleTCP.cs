@@ -29,23 +29,49 @@ public class SocketSampleTCP : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-	
+		m_state = State.SelectHost;
+
+		m_address = GetServerIPAddress();
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
-	
+		switch (m_state) {
+		case State.StartListener:
+			StartListener();
+			break;
+		
+		case State.AcceptClient:
+			AcceptClient();
+			break;
+
+		case State.ServerCommunication:
+			ServerCommunication();
+			break;
+
+		case State.StopListener:
+			StopListener();
+			break;
+
+		case State.ClientCommunication:
+			ClientProcess();
+			break;
+
+		default:
+			break;
+
+		}
 	}
 
 	// TCP待受開始
-	void StartListener (int port)
+	void StartListener ()
 	{
 		Debug.Log("Start server communication.");
 		// ソケット生成
 		m_listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 		// ポート番号割当
-		m_listener.Bind(new IPEndPoint(IPAddress.Any, port));
+		m_listener.Bind(new IPEndPoint(IPAddress.Any, m_port));
 		// 待受開始
 		m_listener.Listen(1);
 		m_state = State.AcceptClient;
@@ -107,5 +133,12 @@ public class SocketSampleTCP : MonoBehaviour
 		m_socket.Close();
 
 		Debug.Log("[TCP]End client communication.");
+	}
+
+	public string GetServerIPAddress()
+	{
+		string hostAddress = "";
+
+		return hostAddress;
 	}
 }

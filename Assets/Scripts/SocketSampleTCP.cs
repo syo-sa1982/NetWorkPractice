@@ -122,6 +122,8 @@ public class SocketSampleTCP : MonoBehaviour
 		// サーバーへ接続
 		m_socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 		m_socket.NoDelay = true;
+
+		Debug.Log(m_address);
 		m_socket.Connect(m_address, m_port);
 
 		// メッセージ送信
@@ -138,7 +140,41 @@ public class SocketSampleTCP : MonoBehaviour
 	public string GetServerIPAddress()
 	{
 		string hostAddress = "";
+		string hostname = Dns.GetHostName();
+
+		IPAddress[] adList = Dns.GetHostAddresses(hostname);
+
+		for (int i = 0; i < adList.Length; ++i) {
+			string addr = adList[i].ToString();
+			string [] c = addr.Split('.');
+
+			if (c.Length == 4) {
+				hostAddress = addr;
+				break;
+			}
+		}
 
 		return hostAddress;
+	}
+
+
+	void OnGUI()
+	{
+		if (m_state == State.SelectHost) {
+			OnGUISelectHost();
+		}
+	}
+
+	void OnGUISelectHost()
+	{
+		if (GUI.Button (new Rect (20,40, 150,20), "Launch server.")) {
+			m_state = State.StartListener;
+		}
+		
+		// クライアントを選択した時の接続するサーバのアドレスを入力します.
+		m_address = GUI.TextField(new Rect(20, 100, 200, 20), m_address);
+		if (GUI.Button (new Rect (20,70,150,20), "Connect to server")) {
+			m_state = State.ClientCommunication;
+		}	
 	}
 }

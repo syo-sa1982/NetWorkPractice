@@ -122,8 +122,7 @@ public class SocketSampleTCP : MonoBehaviour
 		// サーバーへ接続
 		m_socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 		m_socket.NoDelay = true;
-
-		Debug.Log(m_address);
+		m_socket.SendBufferSize = 0;
 		m_socket.Connect(m_address, m_port);
 
 		// メッセージ送信
